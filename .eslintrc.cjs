@@ -18,7 +18,6 @@ module.exports = {
     browser: true,
     commonjs: true,
     es6: true,
-    node: true,
   },
 
   // Base config
@@ -75,7 +74,7 @@ module.exports = {
 
     // Node
     {
-      files: [".eslintrc.js"],
+      files: [".eslintrc.js", "./pushMigration.js"],
       env: {
         node: true,
       },
