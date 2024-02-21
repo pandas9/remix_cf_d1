@@ -7,6 +7,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "../.server/db/schema";
 import { eq } from "drizzle-orm";
+import { Link } from "@remix-run/react";
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare;
@@ -41,6 +42,14 @@ export default function Index() {
 
   return (
     <div>
+      <div className="flex items-center gap-2">
+        <Link to="/" prefetch="intent" className="text-blue-600">
+          index
+        </Link>
+        <Link to="/test" prefetch="intent" className="text-blue-600">
+          test
+        </Link>
+      </div>
       <h1>Welcome to Remix</h1>
       {result.length > 0 ? (
         <>

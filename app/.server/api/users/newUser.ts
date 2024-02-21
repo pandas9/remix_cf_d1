@@ -16,10 +16,12 @@ export async function newUser({ request, context }: ActionFunctionArgs) {
     return null;
   }
 
+  /*
   if (request.method === "DELETE") {
     await db.delete(users).where(eq(users.email, "test@test.com"));
     return null;
   }
+  */
 
   throw new Error(`Method not supported: "${request.method}"`);
 }
