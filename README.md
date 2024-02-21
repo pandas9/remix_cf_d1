@@ -16,3 +16,7 @@ Run
 ---
 
 `npm run dev` will generate local sqlite db
+
+## Deployment
+
+Make sure to bind D1 database inside cf dashboard
