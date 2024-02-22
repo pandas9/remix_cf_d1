@@ -2,6 +2,10 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { newUser } from "../.server/api/users/newUser";
 import { allUsers } from "../.server/api/users/allUsers";
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { ValidatedForm } from "remix-validated-form";
+import { MyInput } from "~/components/input";
+import { MySubmitButton } from "~/components/submitButton";
+import { newUserValidator } from "~/validators/users/validator";
 
 export const loader = allUsers;
 export const action = newUser;
@@ -50,12 +54,15 @@ export default function Index() {
       ) : (
         <>
           <p>No value</p>
-          <Form method="POST">
-            <label htmlFor="value">Set value: </label>
-            <input type="text" name="value" id="value" required />
+          <ValidatedForm validator={newUserValidator} method="POST">
+            <label>Set email</label>
+            <MyInput label="email" name="email" />
             <br />
-            <button>Save</button>
-          </Form>
+            <label>Set password</label>
+            <MyInput label="password" name="password" />
+            <br />
+            <MySubmitButton>Save</MySubmitButton>
+          </ValidatedForm>
         </>
       )}
     </div>

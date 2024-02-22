@@ -8,6 +8,12 @@ import { drizzle } from "drizzle-orm/d1";
 import { users } from "../.server/db/schema";
 import { eq } from "drizzle-orm";
 import { Link } from "@remix-run/react";
+import { withZod } from "@remix-validated-form/with-zod";
+import { ValidatedForm, validationError } from "remix-validated-form";
+import { z } from "zod";
+import { MyInput } from "~/components/input";
+import { MySubmitButton } from "~/components/submitButton";
+import { newUserValidator } from "~/validators/users/validator";
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare;
@@ -21,11 +27,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const db = drizzle(env.DB);
 
   if (request.method === "POST") {
-    const formData = await request.formData();
-    const user = await db.insert(users).values({
-      email: "test@test.com",
-      password: "test",
-    });
+    const data = await newUserValidator.validate(await request.formData());
+    if (data.error) return validationError(data.error);
+    const user = await db.insert(users).values(data.data);
     return null;
   }
 
@@ -61,12 +65,15 @@ export default function Index() {
       ) : (
         <>
           <p>No value</p>
-          <Form method="POST">
-            <label htmlFor="value">Set value: </label>
-            <input type="text" name="value" id="value" required />
+          <ValidatedForm validator={newUserValidator} method="POST">
+            <label>Set email</label>
+            <MyInput label="email" name="email" />
             <br />
-            <button>Save</button>
-          </Form>
+            <label>Set password</label>
+            <MyInput label="password" name="password" />
+            <br />
+            <MySubmitButton>Save</MySubmitButton>
+          </ValidatedForm>
         </>
       )}
     </div>

@@ -2,13 +2,20 @@ import { ActionFunctionArgs } from "@remix-run/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "../../db/schema";
 import { eq } from "drizzle-orm";
+import { validationError } from "remix-validated-form";
+import { newUserValidator } from "~/validators/users/validator";
 
 export async function newUser({ request, context }: ActionFunctionArgs) {
   const { env } = context.cloudflare as any;
   const db = drizzle(env.DB);
 
   if (request.method === "POST") {
-    const formData = await request.formData();
+    const result = await newUserValidator.validate(await request.formData());
+
+    if (result.error) {
+      // validationError comes from `remix-validated-form`
+      return validationError(result.error);
+    }
     const user = await db.insert(users).values({
       email: "test@test.com",
       password: "test",
